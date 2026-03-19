@@ -3,10 +3,6 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { registerQueryData } from "./tools/query-data";
 import { registerGetSchema } from "./tools/get-schema";
 import { registerCodeMode } from "./tools/code-mode";
-import { registerPredictMhcI } from "./tools/predict-mhci";
-import { registerPredictMhcII } from "./tools/predict-mhcii";
-import { registerPredictBcell } from "./tools/predict-bcell";
-import { registerPredictProcessing } from "./tools/predict-processing";
 import { IedbDataDO } from "./do";
 
 export { IedbDataDO };
@@ -24,10 +20,6 @@ export class MyMCP extends McpAgent {
 
     async init() {
         const env = this.env as unknown as IedbEnv;
-        registerPredictMhcI(this.server, env);
-        registerPredictMhcII(this.server, env);
-        registerPredictBcell(this.server, env);
-        registerPredictProcessing(this.server, env);
         registerQueryData(this.server, env);
         registerGetSchema(this.server, env);
         registerCodeMode(this.server, env);

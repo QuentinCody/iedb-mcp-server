@@ -12,7 +12,7 @@ export const iedbCatalog: ApiCatalog = {
         "- Example filter: ?linear_sequence=eq.SLYNTVATL\n" +
         "- Pagination: use limit and offset query params\n" +
         "- Response is always a JSON array of objects\n" +
-        "- For MHC binding predictions, use the hand-built iedb_predict_mhci/mhcii tools instead",
+        "- For MHC binding/processing predictions, use the Tools API via api.post() — responses are auto-parsed from TSV to JSON",
     endpoints: [
         // === Epitopes ===
         {

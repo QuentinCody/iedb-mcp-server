@@ -1,7 +1,7 @@
 import { restFetch } from "@bio-mcp/shared/http/rest-fetch";
 import type { RestFetchOptions } from "@bio-mcp/shared/http/rest-fetch";
 
-const TOOLS_API_BASE = "https://tools-cluster-interface.iedb.org";
+const TOOLS_API_BASE = "https://tools-cluster-interface.iedb.org/tools_api";
 const QUERY_API_BASE = "https://query-api.iedb.org";
 
 export interface IedbFetchOptions extends Omit<RestFetchOptions, "retryOn"> {
@@ -34,6 +34,7 @@ export async function iedbFetch(
 
 /**
  * POST to the IEDB Tools API (prediction endpoints, returns TSV).
+ * Uses raw fetch because restFetch JSON-stringifies body, but Tools API needs form-urlencoded.
  */
 export async function iedbToolsPost(
     path: string,
@@ -41,20 +42,15 @@ export async function iedbToolsPost(
     opts?: IedbFetchOptions,
 ): Promise<Response> {
     const baseUrl = opts?.baseUrl ?? TOOLS_API_BASE;
-
+    const url = `${baseUrl}${path}`;
     const body = new URLSearchParams(formData);
 
-    return restFetch(baseUrl, path, undefined, {
-        ...opts,
+    return fetch(url, {
         method: "POST",
         headers: {
             "Content-Type": "application/x-www-form-urlencoded",
-            ...(opts?.headers ?? {}),
+            "User-Agent": "iedb-mcp-server/1.0 (bio-mcp)",
         },
-        rawBody: body.toString(),
-        retryOn: [429, 500, 502, 503],
-        retries: opts?.retries ?? 2,
-        timeout: opts?.timeout ?? 120_000,
-        userAgent: "iedb-mcp-server/1.0 (bio-mcp)",
+        body: body.toString(),
     });
 }
