@@ -6,7 +6,7 @@ interface SchemaEnv {
     IEDB_DATA_DO?: unknown;
 }
 
-export function registerGetSchema(server: McpServer, env?: SchemaEnv) {
+export function registerGetSchema(server: McpServer, env?: SchemaEnv): void {
     const handler = createGetSchemaHandler("IEDB_DATA_DO", "iedb");
 
     server.registerTool(

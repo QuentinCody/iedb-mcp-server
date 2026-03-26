@@ -12,7 +12,7 @@ interface CodeModeEnv {
 export function registerCodeMode(
     server: McpServer,
     env: CodeModeEnv,
-) {
+): void {
     const apiFetch = createIedbApiFetch();
 
     const searchTool = createSearchTool({

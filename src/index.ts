@@ -13,7 +13,7 @@ interface IedbEnv {
 }
 
 export class MyMCP extends McpAgent {
-    server: any = new McpServer({
+    server = new McpServer({
         name: "iedb",
         version: "0.1.0",
     });

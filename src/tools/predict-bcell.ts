@@ -15,7 +15,7 @@ interface PredictEnv {
     };
 }
 
-export function registerPredictBcell(server: McpServer, env?: PredictEnv) {
+export function registerPredictBcell(server: McpServer, env?: PredictEnv): void {
     const handler = async (args: Record<string, unknown>, extra: Record<string, unknown>) => {
         const runtimeEnv = env || (extra as { env?: PredictEnv })?.env;
         try {
@@ -45,7 +45,7 @@ export function registerPredictBcell(server: McpServer, env?: PredictEnv) {
             if (shouldStage(responseSize) && runtimeEnv?.IEDB_DATA_DO) {
                 const staged = await stageToDoAndRespond(
                     results,
-                    runtimeEnv.IEDB_DATA_DO as any,
+                    runtimeEnv.IEDB_DATA_DO as DurableObjectNamespace,
                     "bcell_prediction",
                     undefined,
                     undefined,
