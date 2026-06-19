@@ -23,6 +23,8 @@ export function registerCodeMode(
 
     const executeTool = createExecuteTool({
         prefix: "iedb",
+        // Verifiable provenance: iedb_execute results carry a _meta.citation.
+        source: { id: "iedb", name: "Immune Epitope Database (IEDB)", url: "https://www.iedb.org", license: "CC BY 4.0" },
         catalog: iedbCatalog,
         apiFetch,
         doNamespace: env.IEDB_DATA_DO,

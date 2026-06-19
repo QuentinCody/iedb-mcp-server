@@ -54,7 +54,7 @@ export function registerPredictProcessing(server: McpServer, env?: PredictEnv): 
                     undefined,
                     undefined,
                     "iedb",
-                    (extra as { sessionId?: string })?.sessionId,
+                    (extra as Record<string, unknown>),
                 );
                 return createCodeModeResponse(
                     {

@@ -52,7 +52,7 @@ export function registerPredictMhcI(server: McpServer, env?: PredictEnv): void {
                     undefined,
                     undefined,
                     "iedb",
-                    (extra as { sessionId?: string })?.sessionId,
+                    (extra as Record<string, unknown>),
                 );
                 return createCodeModeResponse(
                     {
