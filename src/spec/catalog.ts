@@ -5,7 +5,7 @@ export const iedbCatalog: ApiCatalog = {
     baseUrl: "https://query-api.iedb.org",
     version: "2.0",
     auth: "none",
-    endpointCount: 30,
+    endpointCount: 10,
     notes:
         "- PostgREST-style query API: use query params for filtering\n" +
         "- Supports operators: eq, neq, gt, gte, lt, lte, like, ilike, in, is\n" +
