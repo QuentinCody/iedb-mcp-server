@@ -31,7 +31,7 @@ export function registerPredictMhcI(server: McpServer, env?: PredictEnv): void {
                 length,
             };
 
-            const response = await iedbToolsPost("/tools_api/mhci/", formData);
+            const response = await iedbToolsPost("/mhci/", formData);
 
             if (!response.ok) {
                 const body = await response.text().catch(() => "");

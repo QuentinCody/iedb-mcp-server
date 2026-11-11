@@ -29,7 +29,7 @@ export function registerPredictBcell(server: McpServer, env?: PredictEnv): void 
             };
             if (windowSize) formData.window_size = windowSize;
 
-            const response = await iedbToolsPost("/tools_api/bcell/", formData);
+            const response = await iedbToolsPost("/bcell/", formData);
 
             if (!response.ok) {
                 const body = await response.text().catch(() => "");

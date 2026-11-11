@@ -29,7 +29,7 @@ export function registerPredictMhcII(server: McpServer, env?: PredictEnv): void 
                 allele,
             };
 
-            const response = await iedbToolsPost("/tools_api/mhcii/", formData);
+            const response = await iedbToolsPost("/mhcii/", formData);
 
             if (!response.ok) {
                 const body = await response.text().catch(() => "");

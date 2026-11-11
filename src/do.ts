@@ -1,8 +1,21 @@
 import { RestStagingDO } from "@bio-mcp/shared/staging/rest-staging-do";
 import type { SchemaHints } from "@bio-mcp/shared/staging/schema-inference";
 
+/** Unwrap a wrapper-staged MCP envelope ({content, structuredContent: {data}}) to its data. */
+function unwrapEnvelope(value: unknown): unknown {
+    if (value && typeof value === "object" && "content" in value && Array.isArray(value.content) &&
+        "structuredContent" in value && value.structuredContent && typeof value.structuredContent === "object" &&
+        "data" in value.structuredContent) return value.structuredContent.data;
+    return value;
+}
+
 export class IedbDataDO extends RestStagingDO {
-    protected getSchemaHints(data: unknown): SchemaHints | undefined {
+    protected getTabularData(value: unknown): unknown {
+        return unwrapEnvelope(value);
+    }
+
+    protected getSchemaHints(value: unknown): SchemaHints | undefined {
+        const data = unwrapEnvelope(value);
         if (!data || typeof data !== "object") return undefined;
 
         if (Array.isArray(data)) {

@@ -33,7 +33,7 @@ export function registerPredictProcessing(server: McpServer, env?: PredictEnv): 
                 proteasome_type: proteasome,
             };
 
-            const response = await iedbToolsPost("/tools_api/processing/", formData);
+            const response = await iedbToolsPost("/processing/", formData);
 
             if (!response.ok) {
                 const body = await response.text().catch(() => "");

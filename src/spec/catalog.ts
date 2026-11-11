@@ -1,19 +1,28 @@
 import type { ApiCatalog } from "@bio-mcp/shared/codemode/catalog";
+import {nextgenEndpoints, nextgenWorkflows} from "./nextgen";
+import {queryDiscoveryEndpoints, queryMetadataWorkflow} from "./query-discovery";
+import {resultInventoryWorkflow} from "./result-inventory";
 
 export const iedbCatalog: ApiCatalog = {
     name: "IEDB Query API",
     baseUrl: "https://query-api.iedb.org",
-    version: "2.0",
+    version: "0.1",
     auth: "none",
-    endpointCount: 10,
+    endpointCount: 10 + nextgenEndpoints.length + queryDiscoveryEndpoints.length,
+    workflows: [...nextgenWorkflows, resultInventoryWorkflow, queryMetadataWorkflow],
     notes:
+        "- /query/schema returns the published IQ-API schema (observed info.version 0.1); /query/metrics preserves per-table counts/update context, not an immutable release.\n" +
+        "- /epitope/{id} and /reference/{id} are local filtered-export helpers returning native arrays; /mhc_ligand_search maps to /mhc_search.\n" +
         "- PostgREST-style query API: use query params for filtering\n" +
         "- Supports operators: eq, neq, gt, gte, lt, lte, like, ilike, in, is\n" +
         "- Example filter: ?linear_sequence=eq.SLYNTVATL\n" +
         "- Pagination: use limit and offset query params\n" +
-        "- Response is always a JSON array of objects\n" +
+        "- Native IQ-API table responses are arrays; /ng/*, /query/* and /query-link return data plus _mcp context\n" +
+        "- /ng/pipeline uses JSON on the Next-Generation API; submit once and poll returned result IDs separately\n" +
         "- For MHC binding/processing predictions, use the Tools API via api.post() — responses are auto-parsed from TSV to JSON",
     endpoints: [
+        ...nextgenEndpoints,
+        ...queryDiscoveryEndpoints,
         // === Epitopes ===
         {
             method: "GET",
@@ -32,7 +41,8 @@ export const iedbCatalog: ApiCatalog = {
         {
             method: "GET",
             path: "/epitope/{epitope_id}",
-            summary: "Get epitope details by ID",
+            summary: "Adapter helper: read /epitope_export filtered by structure_id; returns a native array page",
+            description: "Accepts a positive safe-integer ID and no query parameters. Every returned row must match the ID. Does not collapse an empty array into a fabricated record. Use the native export route for columns and paging.",
             category: "epitope",
             pathParams: [
                 { name: "epitope_id", type: "number", required: true, description: "IEDB epitope ID" },
@@ -72,7 +82,9 @@ export const iedbCatalog: ApiCatalog = {
         {
             method: "GET",
             path: "/mhc_ligand_search",
-            summary: "Search MHC ligand elution and binding assay results",
+            deprecated: true,
+            description: "Compatibility alias to documented /mhc_search. Existing filter expressions are forwarded unchanged; use exported UI queries or current documentation to verify column names.",
+            summary: "Compatibility alias for MHC ligand assay search; prefer /mhc_search",
             category: "assay",
             queryParams: [
                 { name: "linear_sequence", type: "string", required: false, description: "Peptide sequence" },
@@ -100,7 +112,8 @@ export const iedbCatalog: ApiCatalog = {
         {
             method: "GET",
             path: "/reference/{reference_id}",
-            summary: "Get reference details by ID",
+            summary: "Adapter helper: read /reference_export filtered by reference_id; returns a native array page",
+            description: "Uses an IEDB reference ID, not a PubMed ID. Accepts no query parameters and verifies returned identifiers. Use /reference_export for columns and paging.",
             category: "reference",
             pathParams: [
                 { name: "reference_id", type: "number", required: true, description: "IEDB reference ID" },
@@ -123,6 +136,8 @@ export const iedbCatalog: ApiCatalog = {
         {
             method: "GET",
             path: "/organism_search",
+            deprecated: true,
+            description: "Not established by the current published IQ-API schema. Prefer source-organism fields in /epitope_export or a provider-exported /query-link; this legacy route remains unverified.",
             summary: "Search organisms with epitope data in IEDB",
             category: "organism",
             queryParams: [
@@ -135,6 +150,8 @@ export const iedbCatalog: ApiCatalog = {
         {
             method: "GET",
             path: "/disease_search",
+            deprecated: true,
+            description: "Not established by the current published IQ-API schema. Use a provider-exported disease-filtered /query-link; this legacy route remains unverified.",
             summary: "Search diseases with epitope data in IEDB",
             category: "disease",
             queryParams: [
